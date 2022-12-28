@@ -15,5 +15,5 @@ func (g *Gopher) WriteTo(w io.Writer) (size int64, err error) {
 	}
 	bw.Write(g.Name)
 	bw.Write(g.AgeYears)
-	return bw.size, bw.err
+	return bw.Flush()
 }
