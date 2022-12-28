@@ -1,7 +1,6 @@
 package gopher
 
 import (
-	"encoding/binary"
 	"io"
 )
 
@@ -11,21 +10,11 @@ type Gopher struct {
 }
 
 func (g *Gopher) WriteTo(w io.Writer) (size int64, err error) {
-	err = binary.Write(w, binary.LittleEndian, int32(len(g.Name)))
-	if err != nil {
-		return
+	bw := &binWriter{
+		w: w,
 	}
-	size += 4
-	var n int
-	n, err = w.Write([]byte(g.Name))
-	size += int64(n)
-	if err != nil {
-		return
-	}
-	err = binary.Write(w, binary.LittleEndian, int64(g.AgeYears))
-	if err != nil {
-		return
-	}
-	size += 4
-	return
+	bw.Write(int32(len(g.Name)))
+	bw.Write([]byte(g.Name))
+	bw.Write(int64(g.AgeYears))
+	return bw.size, bw.err
 }
