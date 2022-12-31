@@ -11,7 +11,10 @@ func main() {
 
 	errc := make(chan error)
 	for _, job := range jobs {
-		doConcurrently(job, errc)
+		// Calling concurrently
+		go func(job string) {
+			errc <- do(job)
+		}(job)
 	}
 	for range jobs {
 		if err := <-errc; err != nil {
@@ -20,10 +23,8 @@ func main() {
 	}
 }
 
-func doConcurrently(job string, err chan error) {
-	go func() {
-		fmt.Println("doing job", job)
-		time.Sleep(1 * time.Second)
-		err <- errors.New("something went wrong!")
-	}()
+func do(job string) error {
+	fmt.Println("doing job", job)
+	time.Sleep(1 * time.Second)
+	return errors.New("something went wrong")
 }
