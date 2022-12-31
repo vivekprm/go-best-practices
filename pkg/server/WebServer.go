@@ -32,13 +32,6 @@ func betterHandler(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func main() {
-	fmt.Printf("Starting server at port 8000\n")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
-		log.Fatal(err)
-	}
-}
-
 func doThis() error {
 	fmt.Println("Doing this")
 	return nil
