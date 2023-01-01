@@ -7,11 +7,19 @@ import (
 )
 
 func broadcastMsg(msg string, addrs []string) error {
-	errc := make(chan error, len(addrs))
+	errc := make(chan error)
+	quit := make(chan struct{})
+
+	defer close(quit)
+
 	for _, addr := range addrs {
 		go func(addr string) {
-			errc <- sendMsg(msg, addr)
-			fmt.Println("done")
+			select {
+			case errc <- sendMsg(msg, addr):
+				fmt.Println("done")
+			case <-quit:
+				fmt.Println("quit")
+			}
 		}(addr)
 	}
 
