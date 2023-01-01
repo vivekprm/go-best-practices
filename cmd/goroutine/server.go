@@ -7,7 +7,7 @@ import (
 )
 
 func broadcastMsg(msg string, addrs []string) error {
-	errc := make(chan error)
+	errc := make(chan error, len(addrs))
 	for _, addr := range addrs {
 		go func(addr string) {
 			errc <- sendMsg(msg, addr)
